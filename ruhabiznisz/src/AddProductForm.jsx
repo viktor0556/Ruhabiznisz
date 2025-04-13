@@ -8,7 +8,7 @@ import ProductList from "./ProductList";
 const AddProduct = () => {
   const [name, setName] = useState("");
   const [category, setCategory] = useState("");
-  const [size, setSize] = useState(0);
+  const [size, setSize] = useState("");
   const [price, setPrice] = useState(0);
   const [quantity, setQuantity] = useState(0);
   const [image, setImage] = useState(null);
@@ -33,7 +33,7 @@ const AddProduct = () => {
     await addDoc(collection(db, "products"), {
       name,
       category,
-      size: Number(size),
+      size,
       price: Number(price),
       quantity: Number(quantity),
       imageUrl,
@@ -43,7 +43,7 @@ const AddProduct = () => {
     // Reseteljük az inputokat
     setName("");
     setCategory("");
-    setSize(0);
+    setSize("");
     setPrice(0);
     setQuantity(0);
     setImage(null);
@@ -53,12 +53,15 @@ const AddProduct = () => {
     }
 
     alert("Termék hozzáadva");
-    setRefreshKey(prev => prev + 1);
+    setRefreshKey((prev) => prev + 1);
   };
 
   return (
     <>
-      <form onSubmit={handleSubmit} className="max-w-xl mx-auto bg-white shadow p-4 rounded space-y-4">
+      <form
+        onSubmit={handleSubmit}
+        className="max-w-xl mx-auto bg-white shadow p-4 rounded space-y-4"
+      >
         <div>
           <label className="block font-semibold">Termék neve:</label>
           <input
@@ -81,10 +84,10 @@ const AddProduct = () => {
           <div>
             <label className="block font-semibold">Méret:</label>
             <input
-              type="number"
               value={size}
               onChange={(e) => setSize(e.target.value)}
               className="w-full border border-gray-300 p-2 rounded"
+              placeholder="Pl: M vagy 42"
             />
           </div>
           <div>
@@ -115,7 +118,10 @@ const AddProduct = () => {
             className="block w-full border border-gray-300 rounded px-3 py-2 file:mr-4 file:py-2 file:px-4 file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
           />
         </div>
-        <button type="submit" className="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700 transition">
+        <button
+          type="submit"
+          className="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700 transition"
+        >
           Hozzáadás
         </button>
       </form>

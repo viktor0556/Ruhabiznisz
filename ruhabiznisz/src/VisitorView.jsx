@@ -1,4 +1,3 @@
-// src/VisitorView.jsx
 import React, { useEffect, useState } from "react";
 import { db } from "./firebase";
 import { collection, getDocs } from "firebase/firestore";
@@ -20,43 +19,38 @@ const VisitorView = () => {
   }, []);
 
   return (
-    <div className="p-4">
-      <h2 className="text-2xl font-bold mb-4">Termékek</h2>
-      <div className="overflow-x-auto max-w-full">
-        <table className="min-w-full bg-white shadow-md rounded-lg overflow-hidden">
-          <thead className="bg-gray-100">
-            <tr>
-              <th className="px-4 py-2 text-left">Kép</th>
-              <th className="px-4 py-2 text-left">Név</th>
-              <th className="px-4 py-2 text-left">Kategória</th>
-              <th className="px-4 py-2 text-left">Méret</th>
-              <th className="px-4 py-2 text-left">Ár</th>
-              <th className="px-4 py-2 text-left">Darabszám</th>
-            </tr>
-          </thead>
-          <tbody>
-            {products.map((product) => (
-              <tr key={product.id} className="border-t">
-                <td className="px-4 py-2">
-                  <img
-                    src={product.imageUrl}
-                    alt={product.name}
-                    className="w-20 h-20 object-cover aspect-square rounded-lg shadow-sm"
-                  />
-                </td>
-                <td className="px-4 py-2">{product.name}</td>
-                <td className="px-4 py-2">
-                  <span className="bg-blue-100 text-blue-800 text-xs font-semibold px-2.5 py-0.5 rounded">
-                    {product.category}
-                  </span>
-                </td>
-                <td className="px-4 py-2">{product.size}</td>
-                <td className="px-4 py-2">{product.price} Ft</td>
-                <td className="px-4 py-2">{product.quantity}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+    <div className="bg-gray-100 min-h-screen p-6">
+      <h2 className="text-2xl font-bold mb-8 text-center text-gray-800">Termékek</h2>
+
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-6">
+        {products.map((product) => (
+          <div
+            key={product.id}
+            className="bg-white border border-gray-200 rounded-lg overflow-hidden shadow-sm hover:shadow-md transition duration-200"
+          >
+            {/* Kép szürke háttéren, középre igazítva */}
+            <div className="bg-gray-50 flex items-center justify-center h-[280px]">
+              <img
+                src={product.imageUrl}
+                alt={product.name}
+                className="max-h-[260px] w-auto object-contain"
+              />
+            </div>
+
+            {/* Szöveges rész */}
+            <div className="px-4 py-4 text-left">
+              <h3 className="text-sm font-medium text-gray-900 truncate">
+                {product.name}
+              </h3>
+              <p className="text-xs text-gray-500 mt-1">
+                Elérhető méret: {product.size}
+              </p>
+              <p className="text-base font-semibold text-black mt-2">
+                {product.price.toLocaleString()} Ft
+              </p>
+            </div>
+          </div>
+        ))}
       </div>
     </div>
   );
