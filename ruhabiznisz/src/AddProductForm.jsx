@@ -1,14 +1,8 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import { db } from "./firebase";
-import {
-  collection,
-  addDoc,
-  serverTimestamp,
-} from "firebase/firestore";
-
+import { collection, addDoc, serverTimestamp } from "firebase/firestore";
 import { storage } from "./firebase";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
-
 import ProductList from "./ProductList";
 
 const AddProduct = () => {
@@ -18,17 +12,24 @@ const AddProduct = () => {
   const [price, setPrice] = useState(0);
   const [quantity, setQuantity] = useState(0);
   const [image, setImage] = useState(null);
+  const [refreshKey, setRefreshKey] = useState(0);
+
+  // Ref a file inputhoz
+  const fileInputRef = useRef(null);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
     if (!image) {
       alert("Kérlek válassz képet");
       return;
     }
 
-    const imageRef = ref(storage, `products/${image.name}`); 
-    await uploadBytes(imageRef, image); 
+    // Feltöltés: használj egyedi fájlnevet, ha szükséges (például Date.now() és random kombinációval)
+    const imageRef = ref(storage, `products/${image.name}`);
+    await uploadBytes(imageRef, image);
     const imageUrl = await getDownloadURL(imageRef);
+
     await addDoc(collection(db, "products"), {
       name,
       category,
@@ -38,69 +39,87 @@ const AddProduct = () => {
       imageUrl,
       createdAt: serverTimestamp(),
     });
+
+    // Reseteljük az inputokat
     setName("");
     setCategory("");
     setSize(0);
     setPrice(0);
     setQuantity(0);
+    setImage(null);
+    // A file input értékét közvetlenül reseteljük a ref segítségével
+    if (fileInputRef.current) {
+      fileInputRef.current.value = "";
+    }
+
     alert("Termék hozzáadva");
+    setRefreshKey(prev => prev + 1);
   };
 
   return (
     <>
-      <form onSubmit={handleSubmit}>
-        <label>
-          Termék neve:
+      <form onSubmit={handleSubmit} className="max-w-xl mx-auto bg-white shadow p-4 rounded space-y-4">
+        <div>
+          <label className="block font-semibold">Termék neve:</label>
           <input
             type="text"
             value={name}
             onChange={(e) => setName(e.target.value)}
+            className="w-full border border-gray-300 p-2 rounded"
           />
-        </label>
-
-        <label>
-          Kategória:
+        </div>
+        <div>
+          <label className="block font-semibold">Kategória:</label>
           <input
             type="text"
             value={category}
             onChange={(e) => setCategory(e.target.value)}
+            className="w-full border border-gray-300 p-2 rounded"
           />
-        </label>
-
-        <label>
-          Méret:
+        </div>
+        <div className="grid grid-cols-3 gap-4">
+          <div>
+            <label className="block font-semibold">Méret:</label>
+            <input
+              type="number"
+              value={size}
+              onChange={(e) => setSize(e.target.value)}
+              className="w-full border border-gray-300 p-2 rounded"
+            />
+          </div>
+          <div>
+            <label className="block font-semibold">Ár (Ft):</label>
+            <input
+              type="number"
+              value={price}
+              onChange={(e) => setPrice(e.target.value)}
+              className="w-full border border-gray-300 p-2 rounded"
+            />
+          </div>
+          <div>
+            <label className="block font-semibold">Darabszám:</label>
+            <input
+              type="number"
+              value={quantity}
+              onChange={(e) => setQuantity(e.target.value)}
+              className="w-full border border-gray-300 p-2 rounded"
+            />
+          </div>
+        </div>
+        <div>
+          <label className="block font-semibold mb-1">Kép feltöltése:</label>
           <input
-            type="number"
-            value={size}
-            onChange={(e) => setSize(e.target.value)}
+            type="file"
+            onChange={(e) => setImage(e.target.files[0])}
+            ref={fileInputRef}
+            className="block w-full border border-gray-300 rounded px-3 py-2 file:mr-4 file:py-2 file:px-4 file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
           />
-        </label>
-
-        <label>
-          Ár:
-          <input
-            type="number"
-            value={price}
-            onChange={(e) => setPrice(e.target.value)}
-          />
-        </label>
-
-        <label>
-          Darabszám:
-          <input
-            type="number"
-            value={quantity}
-            onChange={(e) => setQuantity(e.target.value)}
-          />
-        </label>
-        <label>
-          Kép:
-          <input type="file" onChange={(e) => setImage(e.target.files[0])} />
-        </label>
-        <button>Hozzáadás</button>
+        </div>
+        <button type="submit" className="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700 transition">
+          Hozzáadás
+        </button>
       </form>
-      <div>Termék hozzáadása</div>
-      <ProductList/>
+      <ProductList refreshKey={refreshKey} />
     </>
   );
 };
