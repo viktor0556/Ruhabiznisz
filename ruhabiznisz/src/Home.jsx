@@ -5,21 +5,13 @@ const Home = () => {
   const { isAdmin } = useAdmin();
 
   return (
-    <div>
+    <div className="p-6 text-center">
+      <h1 className="text-2xl font-bold mb-4">Üdvözöllet</h1>
       {isAdmin ? (
-        <>
-          <Link to="/addProduct">Termék hozzáadása</Link>
-          {/* További admin menüpontok */}
-        </>
+        <p className="text-green-600">Be vagy jelentkezve adminként.</p>
       ) : (
-        <>
-          <p>Látogatóként nézed az oldalt.</p>
-          {/* Látogatói menüpontok */}
-        </>
+        <p className="text-gray-600">Látogatóként nézed az oldalt.</p>
       )}
-      <Link to="/login">
-        <button>Admin belépés</button>
-      </Link>
     </div>
   );
 };
