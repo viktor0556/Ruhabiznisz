@@ -120,7 +120,7 @@ const AddProduct = () => {
         </div>
         <button
           type="submit"
-          className="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700 transition"
+          className="w-full bg-blue-600 text-white py-2 rounded-md shadow-sm hover:bg-blue-700 hover:shadow-md transition-all duration-300"
         >
           Hozzáadás
         </button>

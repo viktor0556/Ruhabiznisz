@@ -5,6 +5,7 @@ import Home from "./Home";
 import Login from "./Login";
 import AddProductForm from "./AddProductForm";
 import VisitorView from "./VisitorView";
+import ProductDetails from "./ProductDetails";
 
 function App() {
   return (
@@ -16,6 +17,7 @@ function App() {
           <Route path="/visitor" element={<VisitorView />} />
           <Route path="/addProduct" element={<AddProductForm />} />
           <Route path="/login" element={<Login />} />
+          <Route path="/product/:id" element={<ProductDetails />} />
         </Routes>
       </Router>
     </AdminProvider>

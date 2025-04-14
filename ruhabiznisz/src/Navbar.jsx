@@ -1,4 +1,3 @@
-// src/Navbar.jsx
 import { Link } from "react-router-dom";
 import { useAdmin } from "./AdminContext";
 
@@ -6,16 +5,21 @@ const Navbar = () => {
   const { isAdmin } = useAdmin();
 
   return (
-    <nav className="bg-gray-800 text-white p-4 flex justify-between">
-      <div className="space-x-4">
-        <Link to="/" className="hover:underline">Főoldal</Link>
-        <Link to="/visitor" className="hover:underline">Látogatói nézet</Link>
-        {isAdmin && <Link to="/addProduct" className="hover:underline">Admin oldal</Link>}
+    <div className="w-full bg-white px-6 py-3 flex items-center justify-between text-sm text-gray-700 border-b">
+      {/* Bal oldal – logó */}
+      <div className="text-xl font-semibold tracking-wide">
+        <Link to="/">LUX</Link>
       </div>
-      <div>
-        <Link to="/login" className="hover:underline">Admin belépés</Link>
+
+      {/* Jobb oldal – menüpontok */}
+      <div className="space-x-6">
+        <Link to="/visitor" className="hover:underline">Termékek</Link>
+        {isAdmin && (
+          <Link to="/addProduct" className="hover:underline">Admin</Link>
+        )}
+        <Link to="/login" className="hover:underline">Bejelentkezés</Link>
       </div>
-    </nav>
+    </div>
   );
 };
 
