@@ -6,6 +6,7 @@ import Login from "./Login";
 import AddProductForm from "./AddProductForm";
 import VisitorView from "./VisitorView";
 import ProductDetails from "./ProductDetails";
+import HeroSection from "./HeroSection";
 
 function App() {
   return (
@@ -13,7 +14,7 @@ function App() {
       <Router>
         <Navbar />
         <Routes>
-          <Route path="/" element={<Home />} />
+        <Route path="/" element={<HeroSection />} />
           <Route path="/visitor" element={<VisitorView />} />
           <Route path="/addProduct" element={<AddProductForm />} />
           <Route path="/login" element={<Login />} />
