@@ -25,13 +25,11 @@ const VisitorView = () => {
       <h2 className="text-3xl font-semibold text-gray-800 tracking-tight mb-8 text-center">
         Termékek
       </h2>
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-8">
+      <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-4">
         {products.map((product) => (
           <div
             key={product.id}
-            onMouseEnter={() => setHoveredProductId(product.id)}
-            onMouseLeave={() => setHoveredProductId(null)}
-            className="relative bg-white rounded-xl shadow-md overflow-hidden transition-all duration-300 hover:shadow-xl hover:-translate-y-1"
+            className="relative bg-white rounded-xl shadow-md overflow-hidden transition-all duration-300 hover:shadow-xl hover:-translate-y-1 max-w-[160px] sm:max-w-full mx-auto"
           >
             {/* Kép */}
             <div className="bg-gray-100 aspect-[3/4] flex items-center justify-center overflow-hidden rounded-t-xl">
