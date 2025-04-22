@@ -7,7 +7,9 @@ const categories = [
   "Alsóneműk",
   "Parfümök",
   "Kabátok",
+  "Mellény",
   "Cipők",
+  "Fülhallgató"
 ];
 
 const CategorySidebar = ({ selectedCategory, setSelectedCategory }) => {

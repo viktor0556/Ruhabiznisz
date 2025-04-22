@@ -58,7 +58,7 @@ const VisitorView = () => {
               onMouseEnter={() => setHoveredId(product.id)}
               onMouseLeave={() => setHoveredId(null)}
             >
-              <div className="h-[260px] overflow-hidden">
+              <div className="aspect-square overflow-hidden">
                 <img
                   src={product.imageUrl}
                   alt={product.name}
@@ -75,9 +75,7 @@ const VisitorView = () => {
                   <h3 className="text-sm font-semibold uppercase tracking-wide">
                     {product.name}
                   </h3>
-                  <p className="text-xs text-gray-400">
-                    Méret: {product.size}
-                  </p>
+                  <p className="text-xs text-gray-400">Méret: {product.size}</p>
                   <p className="text-base font-bold">
                     {product.price.toLocaleString()} Ft
                   </p>

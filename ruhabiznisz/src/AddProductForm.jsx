@@ -4,6 +4,8 @@ import { collection, addDoc, serverTimestamp } from "firebase/firestore";
 import { storage } from "./firebase";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import ProductList from "./ProductList";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const AddProduct = () => {
   const [name, setName] = useState("");
@@ -13,6 +15,19 @@ const AddProduct = () => {
   const [quantity, setQuantity] = useState(0);
   const [image, setImage] = useState(null);
   const [refreshKey, setRefreshKey] = useState(0);
+
+  // Ez kerül a fájl elejére a state-ek fölé
+  const categoryOptions = [
+    "Pólók",
+    "Farmerek",
+    "Dzsekik",
+    "Alsóneműk",
+    "Parfümök",
+    "Kabátok",
+    "Mellény",
+    "Cipők",
+    "Fülhallgató",
+  ];
 
   // Ref a file inputhoz
   const fileInputRef = useRef(null);
@@ -52,7 +67,7 @@ const AddProduct = () => {
       fileInputRef.current.value = "";
     }
 
-    alert("Termék hozzáadva");
+    alert("Termék hozzáadva!");
     setRefreshKey((prev) => prev + 1);
   };
 
@@ -73,13 +88,20 @@ const AddProduct = () => {
         </div>
         <div>
           <label className="block font-semibold">Kategória:</label>
-          <input
-            type="text"
+          <select
             value={category}
             onChange={(e) => setCategory(e.target.value)}
             className="w-full border border-gray-300 p-2 rounded"
-          />
+          >
+            <option value="">-- Válassz kategóriát --</option>
+            {categoryOptions.map((opt) => (
+              <option key={opt} value={opt}>
+                {opt}
+              </option>
+            ))}
+          </select>
         </div>
+
         <div className="grid grid-cols-3 gap-4">
           <div>
             <label className="block font-semibold">Méret:</label>
@@ -126,6 +148,7 @@ const AddProduct = () => {
         </button>
       </form>
       <ProductList refreshKey={refreshKey} />
+      <ToastContainer position="top-center" autoClose={2000} />
     </>
   );
 };

@@ -6,16 +6,6 @@ import parfume from "./assets/parfume.png"
 const HeroSection = () => {
   return (
     <section className="bg-black text-white min-h-screen flex flex-col items-center justify-center px-6 py-12 relative">
-      {/* Fejléc */}
-      <header className="absolute top-6 left-6 right-6 flex justify-between items-center text-sm font-medium tracking-wide">
-        <span className="text-2xl font-bold">LUX</span>
-        <nav className="space-x-6">
-          <a href="#" className="hover:underline">Főoldal</a>
-          <a href="#products" className="hover:underline">Termékek</a>
-          <a href="#about" className="hover:underline">Rólunk</a>
-          <a href="#contact" className="hover:underline">Kapcsolat</a>
-        </nav>
-      </header>
 
       {/* Szöveg */}
       <div className="text-center mt-24">
