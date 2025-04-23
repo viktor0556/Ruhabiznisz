@@ -4,8 +4,17 @@ import { collection, addDoc, serverTimestamp } from "firebase/firestore";
 import { storage } from "./firebase";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import ProductList from "./ProductList";
-import { toast, ToastContainer } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+
+const categoryFields = {
+  Parfümök: [
+    { label: "Kiszerelés (ml)", key: "volume" },
+    { label: "Illatjegy", key: "note" },
+  ],
+  Fülhallgatók: [
+    { label: "Típus", key: "type" },
+    { label: "Funkció", key: "feature" },
+  ],
+};
 
 const AddProduct = () => {
   const [name, setName] = useState("");
@@ -15,22 +24,13 @@ const AddProduct = () => {
   const [quantity, setQuantity] = useState(0);
   const [image, setImage] = useState(null);
   const [refreshKey, setRefreshKey] = useState(0);
-
-  // Ez kerül a fájl elejére a state-ek fölé
-  const categoryOptions = [
-    "Pólók",
-    "Farmerek",
-    "Dzsekik",
-    "Alsóneműk",
-    "Parfümök",
-    "Kabátok",
-    "Mellény",
-    "Cipők",
-    "Fülhallgató",
-  ];
-
-  // Ref a file inputhoz
+  const [extraFields, setExtraFields] = useState({});
   const fileInputRef = useRef(null);
+  const [description, setDescription] = useState("");
+
+  const handleExtraChange = (key, value) => {
+    setExtraFields((prev) => ({ ...prev, [key]: value }));
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -40,7 +40,6 @@ const AddProduct = () => {
       return;
     }
 
-    // Feltöltés: használj egyedi fájlnevet, ha szükséges (például Date.now() és random kombinációval)
     const imageRef = ref(storage, `products/${image.name}`);
     await uploadBytes(imageRef, image);
     const imageUrl = await getDownloadURL(imageRef);
@@ -48,27 +47,44 @@ const AddProduct = () => {
     await addDoc(collection(db, "products"), {
       name,
       category,
-      size,
+      size: categoryFields[category] ? "" : size,
       price: Number(price),
       quantity: Number(quantity),
       imageUrl,
+      description,
       createdAt: serverTimestamp(),
+      ...extraFields,
     });
 
-    // Reseteljük az inputokat
     setName("");
     setCategory("");
     setSize("");
     setPrice(0);
     setQuantity(0);
     setImage(null);
-    // A file input értékét közvetlenül reseteljük a ref segítségével
-    if (fileInputRef.current) {
-      fileInputRef.current.value = "";
-    }
+    setExtraFields({});
+    setDescription("");
+    if (fileInputRef.current) fileInputRef.current.value = "";
 
-    alert("Termék hozzáadva!");
+    alert("Termék hozzáadva");
     setRefreshKey((prev) => prev + 1);
+  };
+
+  const renderExtraFields = () => {
+    const fields = categoryFields[category];
+    if (!fields) return null;
+
+    return fields.map(({ label, key }) => (
+      <div key={key}>
+        <label className="block font-semibold">{label}:</label>
+        <input
+          type="text"
+          value={extraFields[key] || ""}
+          onChange={(e) => handleExtraChange(key, e.target.value)}
+          className="w-full border border-gray-300 p-2 rounded"
+        />
+      </div>
+    ));
   };
 
   return (
@@ -93,16 +109,19 @@ const AddProduct = () => {
             onChange={(e) => setCategory(e.target.value)}
             className="w-full border border-gray-300 p-2 rounded"
           >
-            <option value="">-- Válassz kategóriát --</option>
-            {categoryOptions.map((opt) => (
-              <option key={opt} value={opt}>
-                {opt}
-              </option>
-            ))}
+            <option value="">Válassz kategóriát</option>
+            <option value="Pólók">Pólók</option>
+            <option value="Farmerek">Farmerek</option>
+            <option value="Dzsekik">Dzsekik</option>
+            <option value="Alsóneműk">Alsóneműk</option>
+            <option value="Parfümök">Parfümök</option>
+            <option value="Kabátok">Kabátok</option>
+            <option value="Cipők">Cipők</option>
+            <option value="Fülhallgatók">Fülhallgatók</option>
+            <option value="Mellények">Mellények</option>
           </select>
         </div>
-
-        <div className="grid grid-cols-3 gap-4">
+        {!categoryFields[category] && (
           <div>
             <label className="block font-semibold">Méret:</label>
             <input
@@ -112,6 +131,9 @@ const AddProduct = () => {
               placeholder="Pl: M vagy 42"
             />
           </div>
+        )}
+        {renderExtraFields()}
+        <div className="grid grid-cols-2 gap-4">
           <div>
             <label className="block font-semibold">Ár (Ft):</label>
             <input
@@ -132,6 +154,15 @@ const AddProduct = () => {
           </div>
         </div>
         <div>
+          <label className="block font-semibold">Leírás:</label>
+          <textarea
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
+            className="w-full border border-gray-300 p-2 rounded h-24 resize-none"
+            placeholder="Pl: Limitált kiadású cipő különleges dizájnnal..."
+          ></textarea>
+        </div>
+        <div>
           <label className="block font-semibold mb-1">Kép feltöltése:</label>
           <input
             type="file"
@@ -148,7 +179,6 @@ const AddProduct = () => {
         </button>
       </form>
       <ProductList refreshKey={refreshKey} />
-      <ToastContainer position="top-center" autoClose={2000} />
     </>
   );
 };

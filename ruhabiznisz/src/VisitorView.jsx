@@ -4,10 +4,23 @@ import { collection, getDocs } from "firebase/firestore";
 import { Link } from "react-router-dom";
 import CategorySidebar from "./CategorySidebar";
 
+const categories = [
+  "Összes",
+  "Pólók",
+  "Farmerek",
+  "Dzsekik",
+  "Alsóneműk",
+  "Parfümök",
+  "Kabátok",
+  "Cipők",
+  "Mellény",
+];
+
 const VisitorView = () => {
   const [products, setProducts] = useState([]);
   const [hoveredId, setHoveredId] = useState(null);
   const [selectedCategory, setSelectedCategory] = useState(null);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   const filteredProducts = selectedCategory
     ? products.filter((p) =>
@@ -29,7 +42,7 @@ const VisitorView = () => {
   }, []);
 
   return (
-    <div className="bg-black text-white py-12 px-4 sm:px-6 md:px-10 min-h-screen">
+    <div className="bg-black text-white py-12 px-4 sm:px-6 md:px-10 min-h-screen overflow-x-hidden">
       <div className="text-center mb-10">
         <h2 className="text-4xl font-bold">Prémium termékkínálat</h2>
         <p className="text-gray-400 text-sm mt-2">
@@ -37,12 +50,45 @@ const VisitorView = () => {
         </p>
       </div>
 
+      {/* Hamburger szűrő mobilon */}
+      <div className="md:hidden mb-6">
+        <button
+          onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+          className="text-white text-xl border border-white px-4 py-2 rounded"
+        >
+          ☰ Kategóriák
+        </button>
+
+        {isMobileMenuOpen && (
+          <div className="bg-[#1a1a1a] mt-4 p-4 rounded space-y-2 animate-slide-in">
+            {categories.map((category) => (
+              <button
+                key={category}
+                onClick={() => {
+                  setSelectedCategory(category === "Összes" ? null : category);
+                  setIsMobileMenuOpen(false);
+                }}
+                className={`block w-full text-left px-3 py-1.5 rounded transition ${
+                  selectedCategory === category
+                    ? "text-blue-400 font-semibold"
+                    : "text-white"
+                } hover:bg-gray-700 hover:text-blue-400`}
+              >
+                {category}
+              </button>
+            ))}
+          </div>
+        )}
+      </div>
+
       <div className="flex gap-10">
-        {/* Bal oldali kategóriaszűrő */}
-        <CategorySidebar
-          selectedCategory={selectedCategory}
-          setSelectedCategory={setSelectedCategory}
-        />
+        {/* Oldalsó szűrő desktopon */}
+        <div className="hidden md:block w-48">
+          <CategorySidebar
+            selectedCategory={selectedCategory}
+            setSelectedCategory={setSelectedCategory}
+          />
+        </div>
 
         {/* Termékkártyák */}
         <div
@@ -75,7 +121,15 @@ const VisitorView = () => {
                   <h3 className="text-sm font-semibold uppercase tracking-wide">
                     {product.name}
                   </h3>
-                  <p className="text-xs text-gray-400">Méret: {product.size}</p>
+                  {product.size?.trim() &&
+                    !["Parfümök", "Fülhallgatók"].includes(
+                      product.category
+                    ) && (
+                      <p className="text-xs text-gray-400">
+                        Méret: {product.size}
+                      </p>
+                    )}
+
                   <p className="text-base font-bold">
                     {product.price.toLocaleString()} Ft
                   </p>

@@ -4,3 +4,10 @@
 body {
   font-family: 'Inter', sans-serif;
 }
+
+html, body {
+  margin: 0;
+  padding: 0;
+  background-color: #000000;
+  overflow-x: hidden;
+}
