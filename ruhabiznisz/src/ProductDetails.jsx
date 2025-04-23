@@ -88,7 +88,7 @@ const ProductDetails = () => {
           <ProductBuy />
 
           <button
-            onClick={() => navigate("/")}
+            onClick={() => navigate("/visitor")}
             className="mt-4 w-full py-3 bg-gray-800 text-white font-semibold rounded hover:bg-gray-700 transition"
           >
             Vissza a termékekhez

@@ -21,12 +21,7 @@ const VisitorView = () => {
   const [hoveredId, setHoveredId] = useState(null);
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-
-  const filteredProducts = selectedCategory
-    ? products.filter((p) =>
-        p.category.toLowerCase().includes(selectedCategory.toLowerCase())
-      )
-    : products;
+  const [searchTerm, setSearchTerm] = useState("");
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -41,13 +36,37 @@ const VisitorView = () => {
     fetchProducts();
   }, []);
 
+  // 🔍 Szűrés kategória + keresőmező alapján
+  const filteredProducts = products.filter((p) => {
+    const matchesCategory = selectedCategory
+      ? p.category?.toLowerCase().includes(selectedCategory.toLowerCase())
+      : true;
+
+    const matchesSearch = searchTerm
+      ? p.name?.toLowerCase().includes(searchTerm.toLowerCase())
+      : true;
+
+    return matchesCategory && matchesSearch;
+  });
+
   return (
     <div className="bg-black text-white py-12 px-4 sm:px-6 md:px-10 min-h-screen overflow-x-hidden">
-      <div className="text-center mb-10">
+      <div className="text-center mb-6">
         <h2 className="text-4xl font-bold">Prémium termékkínálat</h2>
         <p className="text-gray-400 text-sm mt-2">
           Fedezd fel a legújabb stílusos és exkluzív darabokat
         </p>
+      </div>
+
+      {/* 🔍 Keresőmező */}
+      <div className="mb-10 max-w-md mx-auto">
+        <input
+          type="text"
+          placeholder="Keresés terméknévre..."
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          className="w-full px-4 py-2 rounded-md bg-[#1a1a1a] text-white border border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
+        />
       </div>
 
       {/* Hamburger szűrő mobilon */}
